@@ -1,118 +1,57 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mravily <mravily@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/01/21 21:32:10 by mravily           #+#    #+#              #
-#    Updated: 2020/02/06 01:52:37 by mravily          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME = Cub3D
 
-NAME		= libgtp.a
-
-CC =		gcc
-
-MLX_DIR = 	$(shell find lib/mlx -type d)
-SRC_DIR = 	$(shell find srcs -type d)
-INC_DIR = 	$(shell find includes -type d) $(shell find lib/mlx -type d)
-LIB_DIR =
-OBJ_DIR = 	obj
-
-vpath %.c $(foreach dir, $(SRC_DIR), $(dir):) $(foreach dir, $(MLX_DIR), $(dir):)
-vpath %.m $(foreach dir, $(MLX_DIR), $(dir):)
-
-
-# List de toute les library a linker au projet (le nom - le lib et - le .a)
-FRAMEWORK = OpenGL AppKit
-LIB =
-
-#SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.c), $(notdir $(file)))) mlx_new_window.m mlx_init_loop.m mlx_new_image.m mlx_mouse.m
-MLX_SRC = mlx_shaders.c mlx_new_window.m mlx_init_loop.m mlx_new_image.m mlx_xpm.c \
-		mlx_int_str_to_wordtab.c mlx_png.c mlx_mouse.m
+# LIB_DIR = $(shell find lib -type d -maxdepth 1 | grep 'lib/')
+# INC_DIR = $(shell find includes -type d) $(foreach dir, $(LIB_DIR), $(shell find -f $(dir)/includes -type d))
+LIB_DIR = $(shell find lib -type d)
+INC_DIR = $(shell find includes -type d) $(shell find lib -type d)
+SRC_DIR = $(shell find src -type d)
+OBJ_DIR = obj
 
 SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.c), $(notdir $(file))))
-
-OBJ1 = $(MLX_SRC:%.c=%.o)
-OBJ2 = $(OBJ1:%.m=%.o)
-MLX_OBJ = $(addprefix $(OBJ_DIR)/, $(OBJ2))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
+LIB = MGL ft mlx
+FRAMEWORK = AppKit OpenGL
 
-#Compilation flag
-CFLAGS = -Wno-deprecated-declarations -g3 -Wall -Wextra -fsanitize=address -Ofast
+vpath %.c $(foreach dir, $(SRC_DIR), $(dir):)
 
-IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
+CFLAG = -Werror -Wall -Wextra -fsanitize=address -g
+IFLAG = $(foreach dir, $(INC_DIR), -I $(dir) )
+LFLAG = $(foreach lib, $(LIB), -l $(lib) ) $(foreach dir, $(LIB_DIR), -L $(dir) )
 
-LFLAGS = $(foreach dir, $(LIB_DIR), -L $(dir) ) $(foreach lib, $(LIB), -l $(lib) ) $(foreach framework, $(FRAMEWORK), -framework $(framework) )
+LFLAG += $(foreach framework, $(FRAMEWORK), -framework $(framework) )
 
-# Colors
+all		: $(NAME)
 
-_GREY=	$'\x1b[30m
-_RED=	$'\x1b[31m
-_GREEN=	$'\x1b[32m
-_YELLOW=$'\x1b[33m
-_BLUE=	$'\x1b[34m
-_PURPLE=$'\x1b[35m
-_CYAN=	$'\x1b[36m
-_WHITE=	$'\x1b[37m
-
-all:
-				@echo "\n$(_BLUE)___$(NAME) Setting___\n$(_WHITE)"
-				@make $(NAME)
-
-show:
-				@echo "$(_BLUE)SRC :\n$(_YELLOW)$(SRC)$(_WHITE)"
-				@echo "$(_BLUE)OBJ :\n$(_YELLOW)$(OBJ)$(_WHITE)"
-				@echo "$(_BLUE)CFLAGS :\n$(_YELLOW)$(CFLAGS)$(_WHITE)"
-				@echo "$(_BLUE)IFLAGS :\n$(_YELLOW)$(IFLAGS)$(_WHITE)"
-				@echo "$(_BLUE)LFLAGS :\n$(_YELLOW)$(LFLAGS)$(_WHITE)"
+show	:
+	@echo "SRC_DIR : $(SRC_DIR)\n"
+	@echo "LIB_DIR : $(LIB_DIR)\n"
+	@echo "INC_DIR : $(INC_DIR)\n"
+	@echo "CFLAG : $(CFLAG)\n"
+	@echo "IFLAG : $(IFLAG)\n"
+	@echo "LFLAG : $(LFLAG)\n"
+	@echo "SRC :$(foreach file, $(SRC),\n\t$(file))\n"
+	@echo "OBJ :$(foreach file, $(OBJ),\n\t$(file))\n"
 
 $(OBJ_DIR)/%.o : %.c
-				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@mkdir -p $(OBJ_DIR)
-				@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
-				@echo "$(_GREEN)DONE$(_WHITE)"
+	@mkdir -p $(OBJ_DIR)
+	@gcc $(CFLAG) $(IFLAG) -c $< -o $@
 
-$(OBJ_DIR)/%.o : %.m
-				@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
-				@mkdir -p $(OBJ_DIR)
-				@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
-				@echo "$(_GREEN)DONE$(_WHITE)"
+$(NAME)	: $(OBJ)
+	@gcc $(CFLAG) $(IFLAG) $(LFLAG) $(OBJ) -o $@
 
-$(NAME): 		$(MLX_OBJ) $(OBJ) Makefile
-				@echo "-----\nCreating library $(_YELLOW)$@$(_WHITE) ... \c"
-				@ar -rc $(NAME) $(OBJ) $(MLX_OBJ)
-				@ranlib $(NAME)
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+debug : $(NAME)
+	@./$(NAME)
 
-debug:			$(MLX_OBJ) $(OBJ) $(NAME) main.c
-				@echo "Creating Binary File $(_YELLOW)$@$(_WHITE) ... \c"
-				@$(CC) $(CFLAGS) $(IFLAGS) main.c -o debug.out $(LFLAGS) -L . -l gtp
-				@echo "$(_GREEN)DONE$(_WHITE)\n"
-				@echo "Execution !\n-----"
-				@./debug.out ./map.cub
+install :
+	make -C lib/MGL
 
-norme:
-				norminette $(SRC_DIR)
+re-install :
+	make -C lib/MGL re
 
-re:				fclean all
+clean	:
+	@rm -f $(OBJ)
 
-mlx_clean:
-				@echo "$(_WHITE)Deleting MLX Objects $(_YELLOW)$(OBJ_DIR)$(_WHITE) ... \c"
-				@$(foreach file, $(MLX_OBJ), rm -rf $(file))
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
-clean:
-				@echo "$(_WHITE)Deleting Objects Directory $(_YELLOW)$(OBJ_DIR)$(_WHITE) ... \c"
-				@$(foreach file, $(OBJ), rm -rf $(file))
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
+fclean	: clean
+	@rm -f $(NAME)
 
-fclean:			clean
-				@echo "Deleting Binary File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
-				@rm -f $(NAME)
-				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
-
-420:
-				@echo ‎"(̅_̅_̅\(̲̲̲̲̲̅̅̅̅̅̅(̅_̅_̲̅weed_̅_̅_̅()"ڪے
-
-.PHONY: all clean flcean re show exec norme 420
+re		: fclean all
