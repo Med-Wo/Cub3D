@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mravily <mravily@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/19 19:59:01 by mravily           #+#    #+#             */
-/*   Updated: 2020/01/23 20:48:19 by mravily          ###   ########.fr       */
+/*   Created: 2020/03/04 16:54:30 by mravily           #+#    #+#             */
+/*   Updated: 2020/03/04 16:54:34 by mravily          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "get_next_line.h"
 
 static int		check_backslash_n(char *buf, char *rest)
 {
@@ -32,55 +32,54 @@ static int		check_backslash_n(char *buf, char *rest)
 	return (-1);
 }
 
-int				cpy_lastline(int ret, char **line, char *rest, char *buf)
+int				cpy_lastline(char **line, char *rest)
 {
-	int		i;
-	char	*tmp;
-
-	i = check_backslash_n(buf, rest);
-	if (ret == 0 && i != -1)
-	{
-		rest[i] = '\0';
 		*line = ft_strdup(rest);
-		tmp = ft_strdup(rest + (i + 1));
-		free(rest);
-		rest = tmp;
-		free(rest);
-		return (1);
-	}
-	else
-	{
-		*line = ft_strdup(rest);
+		if (*line == NULL)
+			return (-1);
 		free(rest);
 		rest = NULL;
 		return (0);
-	}
 }
 
-int				read_file(int fd, char **line)
+int				return_value_ruler(int return_value)
+{
+	if (return_value == 1)
+		return (1);
+	if (return_value == 0)
+		return (0);
+	else
+		return (-1);
+
+}
+
+int				get_next_line_brother(int fd, char **line)
 {
 	char			buf[BUFFER_SIZE + 1];
 	static char		*rest = NULL;
-	int				i;
-	int				ret;
+	int				i[2];
 	char			*tmp;
 
-	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0 || i != -1)
+	while ((i[1] = read(fd, buf, BUFFER_SIZE)) > 0 || i[0] != -1)
 	{
-		buf[ret] = '\0';
+		buf[i[1]] = '\0';
 		rest = ft_strjoin(rest, buf);
-		i = check_backslash_n(buf, rest);
-		if (i >= 0)
+		if (rest == NULL)
+			return (-1);
+		i[0] = check_backslash_n(buf, rest);
+		if (i[0] >= 0)
 		{
-			rest[i] = '\0';
+			rest[i[0]] = '\0';
 			*line = ft_strdup(rest);
-			tmp = ft_strdup(rest + (i + 1));
+			tmp = ft_strdup(rest + (i[0] + 1));
+			if (*line == NULL || tmp == NULL)
+				return (-1);
 			free(rest);
 			rest = tmp;
 			return (1);
 		}
 	}
-	return (cpy_lastline(ret, line, rest, buf) == 1 ? 1 : 0);
+	return (return_value_ruler(cpy_lastline(line, rest)));
 }
 
 int				get_next_line(int fd, char **line)
@@ -89,5 +88,5 @@ int				get_next_line(int fd, char **line)
 
 	if (fd < 0 || !line || BUFFER_SIZE <= 0 || read(fd, buf, 0) < 0)
 		return (-1);
-	return (read_file(fd, line) == 1 ? 1 : 0);
+	return (return_value_ruler(get_next_line_brother(fd, line)));
 }

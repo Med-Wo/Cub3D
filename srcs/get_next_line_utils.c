@@ -5,24 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mravily <mravily@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/20 11:55:20 by mravily           #+#    #+#             */
-/*   Updated: 2020/01/23 20:48:16 by mravily          ###   ########.fr       */
+/*   Created: 2020/03/04 16:54:17 by mravily           #+#    #+#             */
+/*   Updated: 2020/03/12 19:19:07 by mravily          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
-
-size_t		ft_strlen(const char *s)
-{
-	size_t		i;
-
-	i = 0;
-	if (s == NULL)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
+#include "get_next_line.h"
 
 void		*ft_memcpy(void *dst, const void *src, size_t n)
 {
@@ -38,6 +26,16 @@ void		*ft_memcpy(void *dst, const void *src, size_t n)
 	while (n--)
 		tmp1[n] = tmp2[n];
 	return (dst);
+}
+
+size_t	ft_strlen(char *str)
+{
+	int len;
+
+	len = 0;
+	while (str[len] != '\0')
+		len++;
+	return (len);
 }
 
 char		*ft_strdup(char *s)
@@ -80,4 +78,12 @@ char		*ft_strjoin(char *s1, char *s2)
 	new_s[len_s1 + len_s2] = '\0';
 	free(s1);
 	return (new_s);
+}
+
+void		ft_place(char *rest, char *tmp)
+{
+	printf("test");
+	free(rest);
+	printf("test1");
+	rest = tmp;
 }

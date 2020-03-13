@@ -6,7 +6,7 @@
 /*   By: mravily <mravily@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/21 23:37:04 by mravily           #+#    #+#             */
-/*   Updated: 2020/02/06 18:07:23 by mravily          ###   ########.fr       */
+/*   Updated: 2020/03/04 16:15:15 by mravily          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void		draw_line (t_appli *appli, t_vector start, t_vector end, t_color color)
 
   	s[0] = start.x < end.x ? 1 : -1;
   	s[1] = start.y < end.y ? 1 : -1;
-  	d[1] = -abs (end.y - start.y);
-  	d[0] =  abs (end.x - start.x);
+  	d[1] = -fabs(end.y - start.y);
+  	d[0] =  fabs(end.x - start.x);
    	err[0]= d[0] + d[1];
 
   while (1)
@@ -89,35 +89,36 @@ void		draw_line (t_appli *appli, t_vector start, t_vector end, t_color color)
   }
 }
 
-void draw_texture(t_appli *appli, t_texture *texture, t_vector coord, t_vector size)
-{
-	size_t i;
-	size_t j;
-	int fx;
-	int fy;
-
-
-	i = 0;
-	while (i < size.x)
-	{
-		j = 0;
-		while (j < size.y)
-		{
-			fx = i / (float)(size.x) * texture->width;
-			fy = j / (float)(size.y) * texture->height;
-			my_mlx_pixel_put(appli, i + (int)(coord.x), j + (int)(coord.y), texture_get_color(texture, fx, fy));
-			j++;
-		}
-		i++;
-	}
-	//exit(0);
-}
+// void draw_texture(t_appli *appli, t_texture *texture, t_vector coord, t_vector size)
+// {
+// 	size_t i;
+// 	size_t j;
+// 	int fx;
+// 	int fy;
+//
+//
+// 	i = 0;
+// 	while (i < size.x)
+// 	{
+// 		j = 0;
+// 		while (j < size.y)
+// 		{
+// 			fx = i / (float)(size.x) * texture->width;
+// 			fy = j / (float)(size.y) * texture->height;
+// 			my_mlx_pixel_put(appli, i + (int)(coord.x), j + (int)(coord.y), texture_get_color(texture, fx, fy));
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// 	//exit(0);
+// }
+//
 
 void            my_mlx_pixel_put(t_appli *appli, int x, int y, t_color color)
 {
     char    *dst;
 
-	if (x < 0 || x >= appli->config->resolution_size.x || y < 0 || y >= appli->config->resolution_size.y)
+	if (x < 0 || x >= appli->config->resolution.x || y < 0 || y >= appli->config->resolution.y)
 		return ;
     dst = appli->data->addr + (y * appli->data->line_length + x * (appli->data->bits_per_pixel / 8));
     *(t_color *)dst = color;

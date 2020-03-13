@@ -1,15 +1,28 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mravily <mravily@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2020/03/04 13:40:02 by mravily           #+#    #+#              #
+#    Updated: 2020/03/12 15:57:10 by mravily          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+#.SILENT :
 NAME = Cub3D
 
 # LIB_DIR = $(shell find lib -type d -maxdepth 1 | grep 'lib/')
 # INC_DIR = $(shell find includes -type d) $(foreach dir, $(LIB_DIR), $(shell find -f $(dir)/includes -type d))
 LIB_DIR = $(shell find lib -type d)
 INC_DIR = $(shell find includes -type d) $(shell find lib -type d)
-SRC_DIR = $(shell find src -type d)
+SRC_DIR = $(shell find srcs -type d)
 OBJ_DIR = obj
 
 SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.c), $(notdir $(file))))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
-LIB = MGL ft mlx
+LIB = ft mlx
 FRAMEWORK = AppKit OpenGL
 
 vpath %.c $(foreach dir, $(SRC_DIR), $(dir):)
@@ -43,10 +56,12 @@ debug : $(NAME)
 	@./$(NAME)
 
 install :
-	make -C lib/MGL
+	make -C lib/libft
+	make -C lib/mlx
 
 re-install :
-	make -C lib/MGL re
+	make -C lib/libft re
+	make -C lib/mlx re
 
 clean	:
 	@rm -f $(OBJ)
