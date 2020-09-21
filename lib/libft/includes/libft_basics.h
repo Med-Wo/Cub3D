@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_basics.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mravily <mravily@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 12:05:47 by mravily           #+#    #+#             */
+/*   Updated: 2020/05/26 12:19:24 by mravily          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LIBFT_BASICS_H
 # define LIBFT_BASICS_H
 
@@ -22,7 +34,7 @@ char				*ft_strstr(char *str, char *find);
 char				*ft_strnstr(char *str, char *find, size_t len);
 int					ft_strcmp(char *s1, char *s2);
 int					ft_strncmp(char *s1, char *s2, size_t n);
-bool 				ft_strcmp_c(char *p_src, char p_target);
+bool				ft_strcmp_c(char *p_src, char p_target);
 int					ft_atoi(char *str);
 bool				ft_isalpha(int c);
 bool				ft_isdigit(int c);
@@ -62,7 +74,7 @@ void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char *s, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
-void				error_exit(int nb, char *str);
+void				error_exit(char *line, char *error);
 void				ft_add_to_tab(void *to_add, void ***tab);
 void				ft_tab_cpy(void **dst, void **src);
 void				ft_tab_free(char **tab);

@@ -6,7 +6,7 @@
 #    By: mravily <mravily@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/03/04 13:40:02 by mravily           #+#    #+#              #
-#    Updated: 2020/03/12 15:57:10 by mravily          ###   ########.fr        #
+#    Updated: 2020/04/13 19:15:12 by mravily          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,10 +23,9 @@ OBJ_DIR = obj
 SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.c), $(notdir $(file))))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
 LIB = ft mlx
-FRAMEWORK = AppKit OpenGL
+FRAMEWORK = AppKit OpenGL OpenAL
 
 vpath %.c $(foreach dir, $(SRC_DIR), $(dir):)
-
 CFLAG = -Werror -Wall -Wextra -fsanitize=address -g
 IFLAG = $(foreach dir, $(INC_DIR), -I $(dir) )
 LFLAG = $(foreach lib, $(LIB), -l $(lib) ) $(foreach dir, $(LIB_DIR), -L $(dir) )

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_vector.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mravily <mravily@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 12:43:31 by mravily           #+#    #+#             */
+/*   Updated: 2020/05/26 12:43:33 by mravily          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 t_vector2	create_vector2(int p_x, int p_y)
@@ -15,7 +27,7 @@ t_vector2	*malloc_vector2(int p_x, int p_y)
 
 	result = (t_vector2 *)malloc(sizeof(t_vector2));
 	if (result == NULL)
-		error_exit(111, "Can't malloc a t_vector2");
+		error_exit("", "Can't malloc a t_vector2");
 	*result = create_vector2(p_x, p_y);
 	return (result);
 }
